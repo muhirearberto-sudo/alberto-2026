@@ -1,0 +1,178 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registration Form</title>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registration Form</title>
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to right, #4facfe, #00f2fe);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* FORM CONTAINER */
+.form-container {
+    background: white;
+    padding: 30px;
+    width: 320px;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    text-align: center;
+}
+
+h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* INPUT GROUP */
+.input-group {
+    display: flex;
+    align-items: center;
+    background: #f1f1f1;
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.input-group i {
+    margin-right: 10px;
+    color: #555;
+}
+
+.input-group input,
+.input-group select {
+    border: none;
+    outline: none;
+    background: transparent;
+    width: 100%;
+    font-size: 14px;
+}
+
+/* BUTTONS */
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+button {
+    flex: 1;
+    padding: 10px;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* BUTTON COLORS */
+.save {
+    background: #28a745;
+}
+
+.cancel {
+    background: #dc3545;
+}
+
+.exit {
+    background: #6c757d;
+}
+
+/* HOVER EFFECT */
+button:hover {
+    opacity: 0.85;
+}
+
+</style>
+</head>
+
+
+
+
+</head>
+
+<body>
+
+<div class="form-container">
+    <h2>📝Registration</h2>
+
+    <form>
+
+        <div class="input-group">
+            <i class="fa fa-user"></i>
+            <input type="text" placeholder="Full Name" required>
+        </div>
+
+        <div class="input-group">
+            <i class="fa fa-calendar"></i>
+            <input type="date" required>
+        </div>
+
+        <div class="input-group">
+            <i class="fa fa-venus-mars"></i>
+            <select required>
+                <option value="">Gender</option>
+                <option>Male</option>
+                <option>Female</option>
+                <option>Other</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <i class="fa fa-envelope"></i>
+            <input type="email" placeholder="Email" required>
+        </div>
+
+        <div class="input-group">
+            <i class="fa fa-phone"></i>
+            <input type="tel" placeholder="Phone Number" required>
+        </div>
+
+        <div class="buttons">
+            <button type="submit" class="save">Save</button>
+            <button type="reset" class="cancel">Cancel</button>
+            <button type="button" class="exit" onclick="window.close()">Exit</button>
+        </div>
+
+    </form>
+</div>
+
+</body>
+</html>

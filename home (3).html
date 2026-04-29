@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EAV Kivumu TSS</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Inter', Arial, sans-serif;
+    background: #f4f4f4;
+    color: #111;
+    overflow-x: hidden;
+  }
+
+  /* ===== ANNOUNCEMENT BAR ===== */
+  .announcement-bar {
+    background: #000;
+    color: #fafafa;
+    padding: 10px 0;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .announcement-bar .scroll-text {
+    display: inline-block;
+    white-space: nowrap;
+    animation: marqueeScroll 20s linear infinite;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .announcement-bar .scroll-text span {
+    margin-right: 80px;
+  }
+
+  .announcement-bar .scroll-text span::before {
+    content: '★';
+    margin-right: 80px;
+    opacity: 0.4;
+  }
+
+  @keyframes marqueeScroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* ===== SEARCH BAR ===== */
+  .search-box {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 16px 20px;
+  }
+
+  .search-box input {
+    width: 100%;
+    padding: 12px 20px 12px 44px;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 50px;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    background: #fff;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+
+  .search-box input:focus {
+    border-color: #000;
+    box-shadow: 0 0 0 3px rgba(0,0,0,0.05);
+  }
+
+  .search-box {
+    position: relative;
+  }
+
+  .search-box::before {
+    content: '\f002';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    position: absolute;
+    left: 38px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+    font-size: 14px;
+    pointer-events: none;
+  }
+
+  /* ===== NAVBAR ===== */
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 60px;
+    height: 70px;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    transition: box-shadow 0.3s;
+  }
+
+  .navbar.scrolled {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  }
+
+  .logo-group {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .logo-group img {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    object-fit: cover;
+  }
+
+  .logo-group h1 {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 8px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    text-decoration: none;
+    color: #111;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 8px 18px;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .nav-links a:hover {
+    background: #f4f4f4;
+    color: #000;
+  }
+
+  .nav-links a.active {
+    background: #000;
+    color: #fff;
+  }
+
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    padding: 8px;
+    border: none;
+    background: none;
+  }
+
+  .hamburger span {
+    width: 22px;
+    height: 2px;
+    background: #111;
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    height: 80vh;
+    min-height: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 40px 20px;
+    position: relative;
+    overflow: hidden;
+    background: #000;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .hero-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.4;
+    filter: grayscale(30%);
+  }
+
+  .hero-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.4) 100%);
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 50px;
+    color: #fafafa;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 24px;
+    backdrop-filter: blur(8px);
+  }
+
+  .hero-badge i {
+    font-size: 10px;
+    color: #22c55e;
+  }
+
+  .hero h2 {
+    font-size: 64px;
+    font-weight: 300;
+    letter-spacing: -1px;
+    line-height: 1.1;
+    color: #fff;
+    margin-bottom: 20px;
+  }
+
+  .hero h2 strong {
+    font-weight: 600;
+  }
+
+  .hero p {
+    font-size: 17px;
+    color: rgba(255,255,255,0.7);
+    max-width: 550px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  .hero-buttons {
+    display: flex;
+    gap: 14px;
+    margin-top: 36px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    padding: 14px 32px;
+    border-radius: 50px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+    font-family: 'Inter', sans-serif;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-primary {
+    background: #fff;
+    color: #000;
+  }
+
+  .btn-primary:hover {
+    background: #e5e5e5;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+  }
+
+  .btn-secondary {
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.2);
+    backdrop-filter: blur(8px);
+  }
+
+  .btn-secondary:hover {
+    background: rgba(255,255,255,0.2);
+    transform: translateY(-2px);
+  }
+
+  /* ===== SECTION COMMON ===== */
+  .section {
+    padding: 100px 60px;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: #666;
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-size: 40px;
+    font-weight: 300;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+  }
+
+  .section-title strong {
+    font-weight: 600;
+  }
+
+  .section-desc {
+    font-size: 16px;
+    color: #666;
+    max-width: 550px;
+    margin: 16px auto 0;
+    line-height: 1.7;
+  }
+
+  /* ===== STATS BAR ===== */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    margin: -50px auto 0;
+    max-width: 900px;
+    position: relative;
+    z-index: 10;
+  }
+
+  .stat-item {
+    text-align: center;
+    padding: 36px 20px;
+    border-right: 1px solid rgba(0,0,0,0.06);
+    transition: background 0.3s;
+  }
+
+  .stat-item:last-child {
+    border-right: none;
+  }
+
+  .stat-item:hover {
+    background: #fafafa;
+  }
+
+  .stat-number {
+    font-size: 36px;
+    font-weight: 600;
+    letter-spacing: -1px;
+    color: #000;
+  }
+
+  .stat-number span {
+    color: #22c55e;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-top: 6px;
+    font-weight: 500;
+  }
+
+  /* ===== GALLERY ===== */
+  .gallery-section {
+    padding: 120px 60px 80px;
+    background: #fff;
+  }
+
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .gallery-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+    aspect-ratio: 4/3;
+    cursor: pointer;
+  }
+
+  .gallery-item:first-child {
+    grid-column: span 2;
+    grid-row: span 2;
+    aspect-ratio: auto;
+  }
+
+  .gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease, filter 0.6s ease;
+    filter: grayscale(20%);
+  }
+
+  .gallery-item:hover img {
+    transform: scale(1.05);
+    filter: grayscale(0%);
+  }
+
+  .gallery-item::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .gallery-item:hover::after {
+    opacity: 1;
+  }
+
+  .gallery-item .gallery-caption {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+    z-index: 1;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: all 0.3s ease;
+  }
+
+  .gallery-item:hover .gallery-caption {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ===== ICON CARDS ===== */
+  .cards-section {
+    background: #f4f4f4;
+  }
+
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 40px 28px;
+    text-align: center;
+    transition: all 0.4s ease;
+    border: 1px solid rgba(0,0,0,0.04);
+    cursor: default;
+  }
+
+  .card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.08);
+  }
+
+  .card-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    background: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 22px;
+    color: #000;
+    transition: all 0.3s;
+  }
+
+  .card:hover .card-icon {
+    background: #000;
+    color: #fff;
+  }
+
+  .card h3 {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    letter-spacing: -0.2px;
+  }
+
+  .card p {
+    font-size: 13px;
+    color: #888;
+    line-height: 1.7;
+  }
+
+  /* ===== PROGRAMS / CLASSES ===== */
+  .programs-section {
+    background: #fff;
+  }
+
+  .programs-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .program-card {
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+    aspect-ratio: 3/4;
+    cursor: pointer;
+    group: true;
+  }
+
+  .program-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+    filter: brightness(0.85);
+  }
+
+  .program-card:hover img {
+    transform: scale(1.08);
+    filter: brightness(0.7);
+  }
+
+  .program-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 60%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 28px;
+    transition: background 0.3s;
+  }
+
+  .program-card:hover .program-card-overlay {
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.1) 60%);
+  }
+
+  .program-card-tag {
+    display: inline-block;
+    padding: 4px 12px;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 50px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #fff;
+    margin-bottom: 10px;
+    width: fit-content;
+    backdrop-filter: blur(4px);
+  }
+
+  .program-card h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: -0.2px;
+  }
+
+  .program-card-arrow {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 12px;
+    opacity: 0;
+    transform: translate(-8px, 8px);
+    transition: all 0.3s ease;
+  }
+
+  .program-card:hover .program-card-arrow {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+
+  /* ===== VIDEO SECTION ===== */
+  .video-section {
+    background: #000;
+    padding: 100px 60px;
+  }
+
+  .video-section .section-label {
+    color: #888;
+  }
+
+  .video-section .section-title {
+    color: #fff;
+  }
+
+  .video-section .section-desc {
+    color: #888;
+  }
+
+  .video-scroll {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .video-scroll video {
+    width: 100%;
+    aspect-ratio: 16/9;
+    border-radius: 16px;
+    object-fit: cover;
+    background: #111;
+    border: 1px solid rgba(255,255,255,0.08);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .video-scroll video:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+  }
+
+  /* ===== CTA SECTION ===== */
+  .cta-section {
+    background: #fff;
+    padding: 100px 60px;
+  }
+
+  .cta-box {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 60px;
+    background: #000;
+    border-radius: 28px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-box::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(34,197,94,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .cta-box h2 {
+    font-size: 36px;
+    font-weight: 300;
+    color: #fff;
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cta-box h2 strong {
+    font-weight: 600;
+  }
+
+  .cta-box p {
+    color: rgba(255,255,255,0.6);
+    font-size: 16px;
+    margin-bottom: 32px;
+    position: relative;
+    z-index: 1;
+    line-height: 1.7;
+  }
+
+  .cta-box .btn {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ===== FOOTER ===== */
+  .footer {
+    background: #111;
+    color: #fff;
+    padding: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .footer-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .footer-logo {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    object-fit: cover;
+  }
+
+  .footer-text {
+    font-size: 13px;
+    color: #888;
+    line-height: 1.6;
+  }
+
+  .footer-text strong {
+    color: #fff;
+    font-weight: 500;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 24px;
+  }
+
+  .footer-links a {
+    color: #888;
+    text-decoration: none;
+    font-size: 13px;
+    transition: color 0.3s;
+  }
+
+  .footer-links a:hover {
+    color: #fff;
+  }
+
+  .footer-copy {
+    width: 100%;
+    text-align: center;
+    font-size: 12px;
+    color: #555;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+
+  /* ===== CHAT BUTTON ===== */
+  .chat-btn {
+    position: fixed;
+    right: 28px;
+    bottom: 28px;
+    background: #000;
+    color: white;
+    padding: 14px 22px;
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: 500;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    z-index: 200;
+    transition: all 0.3s ease;
+    border: none;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .chat-btn:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.35);
+  }
+
+  .chat-btn .chat-dot {
+    width: 8px;
+    height: 8px;
+    background: #22c55e;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* ===== SCROLL REVEAL ===== */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ===== MOBILE NAV OVERLAY ===== */
+  .mobile-nav {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(255,255,255,0.98);
+    backdrop-filter: blur(20px);
+    z-index: 150;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+
+  .mobile-nav.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .mobile-nav a {
+    text-decoration: none;
+    color: #111;
+    font-size: 28px;
+    font-weight: 300;
+    padding: 12px 40px;
+    border-radius: 16px;
+    transition: all 0.3s;
+    letter-spacing: -0.5px;
+  }
+
+  .mobile-nav a:hover {
+    background: #f4f4f4;
+  }
+
+  .mobile-nav .close-btn {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    width: 44px;
+    height: 44px;
+    border: none;
+    background: #f4f4f4;
+    border-radius: 50%;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s;
+  }
+
+  .mobile-nav .close-btn:hover {
+    background: #e5e5e5;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 1024px) {
+    .cards-grid,
+    .programs-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .gallery {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .gallery-item:first-child {
+      grid-column: span 2;
+      grid-row: span 1;
+      aspect-ratio: 16/9;
+    }
+
+    .video-scroll {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .section {
+      padding: 80px 40px;
+    }
+
+    .gallery-section {
+      padding: 100px 40px 60px;
+    }
+
+    .video-section {
+      padding: 80px 40px;
+    }
+
+    .cta-section {
+      padding: 80px 40px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .navbar {
+      padding: 0 24px;
+    }
+
+    .nav-links {
+      display: none;
+    }
+
+    .hamburger {
+      display: flex;
+    }
+
+    .mobile-nav {
+      display: flex;
+    }
+
+    .hero h2 {
+      font-size: 36px;
+    }
+
+    .hero p {
+      font-size: 15px;
+    }
+
+    .stats-bar {
+      grid-template-columns: repeat(2, 1fr);
+      margin: -40px 24px 0;
+      border-radius: 16px;
+    }
+
+    .stat-item {
+      padding: 28px 16px;
+    }
+
+    .stat-item:nth-child(2) {
+      border-right: none;
+    }
+
+    .stat-number {
+      font-size: 28px;
+    }
+
+    .cards-grid,
+    .programs-grid {
+      grid-template-columns: 1fr;
+      max-width: 400px;
+    }
+
+    .gallery {
+      grid-template-columns: 1fr;
+    }
+
+    .gallery-item:first-child {
+      grid-column: span 1;
+    }
+
+    .video-scroll {
+      grid-template-columns: 1fr;
+    }
+
+    .section {
+      padding: 60px 24px;
+    }
+
+    .section-title {
+      font-size: 30px;
+    }
+
+    .gallery-section {
+      padding: 80px 24px 40px;
+    }
+
+    .video-section {
+      padding: 60px 24px;
+    }
+
+    .cta-section {
+      padding: 60px 24px;
+    }
+
+    .cta-box {
+      padding: 40px 28px;
+      border-radius: 20px;
+    }
+
+    .cta-box h2 {
+      font-size: 26px;
+    }
+
+    .footer {
+      padding: 40px 24px;
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .footer-left {
+      flex-direction: column;
+    }
+
+    .footer-links {
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .search-box {
+      padding: 12px 24px;
+    }
+
+    .chat-btn span.chat-label {
+      display: none;
+    }
+
+    .chat-btn {
+      padding: 16px;
+      border-radius: 50%;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- ANNOUNCEMENT BAR -->
+<div class="announcement-bar">
+  <div class="scroll-text">
+    <span>Welcome to EAV Kivumu TSS</span>
+    <span>Admissions Open for 2026</span>
+    <span>Quality Education for a Better Future</span>
+    <span>Welcome to EAV Kivumu TSS</span>
+    <span>Admissions Open for 2026</span>
+    <span>Quality Education for a Better Future</span>
+  </div>
+</div>
+
+<!-- SEARCH -->
+<div class="search-box">
+  <input type="text" placeholder="Search courses, news, events...">
+</div>
+
+<!-- NAVBAR -->
+<header class="navbar" id="navbar">
+  <div class="logo-group">
+    <img src="c:\Users\hp\Desktop\index.html\alberto.jpeg"alt="EAV Kivumu Logo">
+    <h1>EAV Kivumu TSS</h1>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#" class="active">Home</a></li>
+    <li><a href="registration.html">Registration</a></li>
+    <li><a href="login.html">Login</a></li>
+    <li><a href="abouts.html">About</a></li>
+    <li><a href="news.html">News</a></li>
+  </ul>
+  <button class="hamburger" onclick="toggleMobileNav()" aria-label="Menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+</header>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <button class="close-btn" onclick="toggleMobileNav()"><i class="fas fa-times"></i></button>
+  <a href="home.html" onclick="toggleMobileNav()">Home</a>
+  <a href="registration.html" onclick="toggleMobileNav()">Registration</a>
+  <a href="login.html" onclick="toggleMobileNav()">Login</a>
+  <a href="abouts.html" onclick="toggleMobileNav()">About</a>
+  <a href="news.html" onclick="toggleMobileNav()">News</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg">
+    <img src="c:\Users\hp\Desktop\index.html\download (8).jpeg" alt="School Campus">
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <i class="fas fa-circle"></i>
+      Enrollment Now Open
+    </div>
+    <h2>Welcome to <strong>EAV Kivumu tss</strong></h2>
+    <p>We provide quality technical and vocational education, empowering students with practical skills for a brighter future.</p>
+    <div class="hero-buttons">
+      <a href="registration.html" class="btn btn-primary">
+        Apply Now <i class="fas fa-arrow-right"></i>
+      </a>
+      <a href="abouts.html" class="btn btn-secondary">
+        <i class="fas fa-play"></i> Learn More
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar reveal">
+  <div class="stat-item">
+    <div class="stat-number" data-target="27000">0<span>+</span></div>
+    <div class="stat-label">Students</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number" data-target="87">0<span>+</span></div>
+    <div class="stat-label">Teachers</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number" data-target="76">0<span>+</span></div>
+    <div class="stat-label">Programs</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number" data-target="100">0<span>%</span></div>
+    <div class="stat-label">Pass Rate</div>
+  </div>
+</div>
+
+<!-- GALLERY -->
+<section class="gallery-section">
+  <div class="section-header reveal">
+    <div class="section-label">Campus Life</div>
+    <h2 class="section-title">Our <strong>Gallery</strong></h2>
+    <p class="section-desc">Explore the vibrant life at EAV Kivumu through our campus moments.</p>
+  </div>
+  <div class="gallery reveal">
+    <div class="gallery-item">
+      <img src="C:\Users\hp\Desktop\index.html\adm.jfif"
+"C:\Users\hp\Desktop\index.html\Download (6).mp4" alt="Campus">
+      <div class="gallery-caption">Main Campus View</div>
+    </div>
+    <div class="gallery-item">
+      <img src= "C:\Users\hp\Desktop\index.html\student.jfif"alt="Students">
+      <div class="gallery-caption">Student Activities</div>
+    </div>
+    <div class="gallery-item">
+      <img src="C:\Users\hp\Desktop\index.html\class.jfif" alt="Classroom">
+      <div class="gallery-caption">Modern Classrooms</div>
+    </div>
+    <div class="gallery-item">
+      <img src="C:\Users\hp\Desktop\index.html\library.jfif"alt="Library">
+      <div class="gallery-caption">School Library</div>
+    </div>
+    <div class="gallery-item">
+      <img src="C:\Users\hp\Desktop\index.html\spo.jfif"alt="Sports">
+      <div class="gallery-caption">Sports Ground</div>
+    </div>
+  </div>
+</section>
+
+<!-- ICON CARDS -->
+<section class="section cards-section">
+  <div class="section-header reveal">
+    <div class="section-label">Why Choose Us</div>
+    <h2 class="section-title">What Makes Us <strong>Different</strong></h2>
+    <p class="section-desc">We combine academic excellence with hands-on practical training.</p>
+  </div>
+  <div class="cards-grid reveal">
+    <div class="card">
+      <div class="card-icon"><i class="fas fa-book"></i></div>
+      <h3>Library</h3>
+      <p>Huge collection of books and digital resources for students to explore and learn.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+      <h3>Teachers</h3>
+      <p>Qualified and experienced teachers dedicated to student success and growth.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon"><i class="fas fa-graduation-cap"></i></div>
+      <h3>Results</h3>
+      <p>Excellent academic performance every year with top national exam results.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon"><i class="fas fa-school"></i></div>
+      <h3>Campus</h3>
+      <p>Safe and modern learning environment equipped with latest facilities.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PROGRAMS / CLASSES -->
+<section class="section programs-section">
+  <div class="section-header reveal">
+    <div class="section-label">Our Programs</div>
+    <h2 class="section-title">Explore <strong>Fields of Study</strong></h2>
+    <p class="section-desc">Choose from our diverse range of technical and vocational programs.</p>
+  </div>
+  <div class="programs-grid reveal">
+    <div class="program-card">
+      <img src="c:\Users\hp\Desktop\index.html\download (3).jpeg" alt="Public Works">
+      <div class="program-card-overlay">
+        <div class="program-card-tag">Technical</div>
+        <h3>Public Works</h3>
+      </div>
+      <div class="program-card-arrow"><i class="fas fa-arrow-up-right"></i></div>
+    </div>
+    <div class="program-card">
+      <img src="c:\Users\hp\Desktop\index.html\download (4).jpeg"alt="Building Construction">
+      <div class="program-card-overlay">
+        <div class="program-card-tag">Vocational</div>
+        <h3>Building Construction</h3>
+      </div>
+      <div class="program-card-arrow"><i class="fas fa-arrow-up-right"></i></div>
+    </div>
+    <div class="program-card">
+      <img src="c:\Users\hp\Desktop\index.html\download (5).jpeg"="Animal Health">
+      <div class="program-card-overlay">
+        <div class="program-card-tag">Science</div>
+        <h3>Animal Health</h3>
+      </div>
+      <div class="program-card-arrow"><i class="fas fa-arrow-up-right"></i></div>
+    </div>
+    <div class="program-card">
+      <img src="C:\Users\hp\Desktop\index.html\sod.jfif"alt="Software Development">
+      <div class="program-card-overlay">
+        <div class="program-card-tag">Technology</div>
+        <h3>Software Development</h3
+      </div>
+      <div class="program-card-arrow"><i class="fas fa-arrow-up-right"></i></div>
+    </div>
+  </div>
+</section>
+
+<!-- VIDEO SECTION -->
+<section class="video-section">
+  <div class="section-header reveal">
+    <div class="section-label">Media</div>
+    <h2 class="section-title">Watch & <strong>Discover</strong></h2>
+    <p class="section-desc">Get a glimpse of student life, events, and activities at EAV Kivumu.</p>
+  </div>
+  <div class="video-scroll reveal">
+    <video controls >
+      <source src="C:\Users\hp\Desktop\index.html\URUGENDOSHURI _ umuyobozi w'Ishami ry'uburezi, ubuzima n'urubyiruko muri AEBR  yasuye EAV Kivumu - AEBR (1080p, h264).mp4"type="video/mp4">
+    </video>
+    <video controls >
+      <source src="C:\Users\hp\Desktop\index.html\🔥ABANYESHURI BA EAV KIVUMU TSS ✨✨✨ UBWO BAGANIRIZWAGA AMATEKA Y'IGIHUNGU MU ITORERO💯🔥🔥 - MCR Nyange (Media club radio) eavkivumu tss (360p, h264).mp4"type="video/mp4">
+    </video>
+    <video controls >
+      <source src="c:\Users\hp\Desktop\index.html\Download (10).mp4" type="video/mp4">
+      
+    </video>
+  </div>
+</section>
+
+<!-- CTA SECTION -->
+<section class="cta-section">
+  <div class="cta-box reveal">
+    <h2>Ready to Join <strong>EAV Kivumu?</strong></h2>
+    <p>Take the first step toward a successful future. Register today and become part of our growing community of learners and achievers.</p>
+    <a href="registration.html" class="btn btn-primary">
+      Start Registration <i class="fas fa-arrow-right"></i>
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-left">
+    <img src="c:\Users\hp\Desktop\index.html\alberto.jpeg"alt="Logo" class="footer-logo">
+    <div class="footer-text">
+      <strong>EAV Kivumu TSS</strong>
+      Technical Secondary School — Shaping Future Leaders
+    </div>
+  </div>
+  <div class="footer-links">
+    <a href="home.html">Home</a>
+    <a href="registration.html">Registration</a>
+    <a href="login.html">Login</a>
+    <a href="abouts.html">About</a>
+    <a href="news.html">News</a>
+  </div>
+  <div class="footer-copy">
+    © 2026 EAV Kivumu TSS — Designed by Nsanzumuhire Alberto
+  </div>
+</footer>
+
+<!-- CHAT BUTTON -->
+<button class="chat-btn">
+  <div class="chat-dot"></div>
+  <span class="chat-label">Chat with us</span>
+  <i class="fas fa-comment-dots"></i>
+</button>
+
+<script>
+  // Sticky navbar shadow on scroll
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 10);
+  });
+
+  // Mobile nav toggle
+  function toggleMobileNav() {
+    document.getElementById('mobileNav').classList.toggle('open');
+    document.body.style.overflow = document.getElementById('mobileNav').classList.contains('open') ? 'hidden' : '';
+  }
+
+  // Scroll reveal
+  const revealElements = document.querySelectorAll('.reveal');
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  revealElements.forEach(el => revealObserver.observe(el));
+
+  // Counter animation
+  const statNumbers = document.querySelectorAll('.stat-number');
+  const counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        const target = parseInt(el.getAttribute('data-target'));
+        const suffix = el.querySelector('span').textContent;
+        let current = 0;
+        const step = Math.max(1, Math.floor(target / 60));
+        const timer = setInterval(() => {
+          current += step;
+          if (current >= target) {
+            current = target;
+            clearInterval(timer);
+          }
+          el.innerHTML = current + '<span>' + suffix + '</span>';
+        }, 25);
+        counterObserver.unobserve(el);
+      }
+    });
+  }, { threshold: 0.5 });
+
+  statNumbers.forEach(el => counterObserver.observe(el));
+</script>
+</body>
+</html>
